@@ -1,0 +1,25 @@
+{
+  // we can define multiple editors
+  "propertyEditors": [
+    {
+      /*this must be a unique alias*/
+      "alias": "TagList",
+      /*the name*/
+      "name": "Common Tags",
+      /*the icon*/
+      "icon": "icon-tags",
+      /*grouping for "Select editor" dialog*/
+      "group": "pickers",
+      /*the HTML file we will load for the editor*/
+      "editor": {
+        "view": "~/App_Plugins/TagList/taglisteditor.html",
+        "valueType": "JSON"
+      }
+    }
+  ],
+  // array of files we want to inject into the application on app_start
+  "javascript": [
+    "~/App_Plugins/TagList/taglisteditor.controller.js",
+    "~/App_Plugins/TagList/taglist.resource.js"
+  ]
+}

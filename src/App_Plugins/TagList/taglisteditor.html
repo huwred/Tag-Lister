@@ -1,0 +1,17 @@
+﻿<div ng-controller="TagListController as vm" class="taglist-editor">
+    <span ng-if="vm.loading">
+        <umb-load-indicator></umb-load-indicator>
+    </span>
+    <ng-form name="taglistEditorForm" class="ng-pristine ng-valid ng-valid-required" ng-if="!vm.loading">
+        <select class="umb-property-editor umb-dropdown ng-pristine ng-untouched ng-valid ng-scope ng-empty ng-valid-required" 
+                ng-options="item as ' (' + item.nodeCount + ') ' + item.text for item in vm.cmsTags track by item.id" 
+                ng-model="selected" multiple aria-multiselectable="true" size="10"></select>
+        <p>&nbsp;</p>
+        <a href="" class="umb-node-preview-add" data-nodrag ng-click="addTags(selected)" prevent-default>
+            <localize key="general_add">Add to List</localize>
+        </a>
+
+    </ng-form>
+
+
+</div>
