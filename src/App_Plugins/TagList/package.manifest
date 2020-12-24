@@ -7,14 +7,36 @@
       /*the name*/
       "name": "Common Tags",
       /*the icon*/
-      "icon": "icon-tags",
+      "icon": "icon-list",
       /*grouping for "Select editor" dialog*/
       "group": "pickers",
       /*the HTML file we will load for the editor*/
       "editor": {
         "view": "~/App_Plugins/TagList/taglisteditor.html",
         "valueType": "JSON"
-      }
+      },
+      "prevalues": {
+        "fields": [
+          {
+            "label": "Number of Tags",
+            "description": "The number of tags to show in the dropdown",
+            "key": "maxTags",
+            "view": "number",
+            "validation": [
+              {
+                "type": "Required"
+              }
+            ]
+          },
+          {
+            "label": "Group override",
+            "description": "If the value is blank it will use the group defined on the pages TAG control",
+            "key": "groupOverride",
+            "view": "textstring"
+          }
+        ]
+      },
+      "defaultConfig": { "maxTags": "10" }
     }
   ],
   // array of files we want to inject into the application on app_start

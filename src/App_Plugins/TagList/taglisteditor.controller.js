@@ -9,14 +9,20 @@
             vm.routeid = $routeParams.id;
             vm.tagPropertyId = -1;
             vm.groupName = "";
-            
+
+            console.log('groupOverride ' + $scope.model.config.groupOverride);
+            console.log('maxTags ' + $scope.model.config.maxTags);
+
             contentResource.getById($routeParams.id)
                 .then((data) => {
                     angular.forEach(data.variants[0].tabs[1].properties, (property) => {
                         if (property.view === "tags") {
                             vm.tagPropertyId = property.id;
-                            vm.groupName = property.config.group;
-                            TagListResource.getTagsByGroup(vm.groupName).then(function (response) {
+                            if (vm.groupName === "") {
+                                vm.groupName = property.config.group;
+                            }
+                            var limit = parseInt($scope.model.config.maxTags);
+                            TagListResource.getTagsByGroup(vm.groupName,limit).then(function (response) {
                                 vm.cmsTags = response.data;
                             });
                         }

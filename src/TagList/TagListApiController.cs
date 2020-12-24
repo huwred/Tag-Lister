@@ -12,11 +12,9 @@ namespace CommonTagList.Controllers
     public class CommonTagListController : UmbracoAuthorizedApiController
     {
         [HttpGet]
-        public IEnumerable<TagModel> GetTags(string group)
+        public IEnumerable<TagModel> GetTags(string group, int max)
         {
-            var selecttags = new List<SelectedTag>();
-            var tags = Umbraco.TagQuery.GetAllTags(group);
-            return tags.OrderByDescending(t=>t.NodeCount).Take(10);
+            return Umbraco.TagQuery.GetAllTags(group).OrderByDescending(t=>t.NodeCount).Take(max);
         }
 
         [HttpPost]
@@ -24,20 +22,19 @@ namespace CommonTagList.Controllers
         {
             IContentService ss = Services.ContentService;
             var content = ss.GetById(Tags.Id);
+            //get the Tag property on the page
             var tagproperty = content.Properties.SingleOrDefault(p => p.PropertyType.PropertyEditorAlias == "Umbraco.Tags");
 
             var taggedContent = Umbraco.TagQuery.GetTagsForProperty(Tags.Id,tagproperty.Alias).Select(t=>t.Text).ToArray();
 
             string[] newTagsToSet = Tags.Tags.Select(t=>t.Text).ToArray();
 
-            //make content persisted animals.Union(taggedContent).ToArray()
+            //make content persisted 
             Services.ContentService.Save(content);
             // set the tags
             content.AssignTags(tagproperty.Alias, newTagsToSet.Union(taggedContent).ToArray());
             Services.ContentService.SaveAndPublish(content);
 
-
-            var tags = Umbraco.TagQuery.GetAllTags();
             return content; //tags.OrderByDescending(t=>t.NodeCount).Take(10);
         }
     }
