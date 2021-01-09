@@ -7,5 +7,7 @@ namespace CommonTagList.Models
     {
         public int Id { get; set; }
         public IEnumerable<TagModel> Tags;
+        public string Group { get; set; }
+        public int PropertyId { get; set; }
     }
 }

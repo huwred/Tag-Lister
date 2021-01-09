@@ -29,6 +29,17 @@
             ]
           },
           {
+            "label": "Tag Control",
+            "description": "Alias of the TAG list to associate",
+            "key": "tagParent",
+            "view": "textstring",
+            "validation": [
+              {
+                "type": "Required"
+              }
+            ]
+          },
+          {
             "label": "Group override",
             "description": "If the value is blank it will use the group defined on the pages TAG control",
             "key": "groupOverride",
