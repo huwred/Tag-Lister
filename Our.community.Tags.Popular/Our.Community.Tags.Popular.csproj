@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Our.Community.Tags.Popular</PackageId>
+    <Product>Our.Community.Tags.Popular</Product>
+    <Title>Our.Community.Tags.Popular</Title>
+
+		<Version>17.0.0</Version>
+		<Description>A custom property editor for Umbraco 17 that displays the most-used tags in a named group and lets editors multi-select them to populate a sibling Tags property</Description>
+		<PackageTags>umbraco-marketplace umbraco plugin package</PackageTags>
+		<RepositoryUrl>https://github.com/huwred/Tag-Lister</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageIconUrl>icon.png</PackageIconUrl>
+		<PackageOutputPath>E:\Umbraco-Dev\Nuget</PackageOutputPath>
+	</PropertyGroup>
+
+
+  <!-- Per-project - with versions -->
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Api.Common" Version="17.3.1" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.1" />
+
+    <!--
+      Swashbuckle is available transitively from the Umbraco packages above, but we take a direct
+      dependency here because extension code directly uses types from Swashbuckle (SwaggerGenOptions)
+      and Microsoft.OpenApi (OpenApiInfo). Without a direct reference, this project's Swashbuckle
+      version is determined solely by NuGet's transitive resolution, which can resolve to a different
+      version than the host site project (e.g. a newer patch). When that happens, the different
+      Microsoft.OpenApi versions (a transitive dependency of Swashbuckle) can conflict at runtime,
+      causing custom Swagger documents registered by the extension to fail to appear.
+      Most other transitive dependencies don't have this problem because extension code doesn't
+      use their types directly - only Swashbuckle/OpenApi types are referenced in the composer.
+    -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.1" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="17.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't include the client folder as part of packaging nuget build -->
+    <Content Remove="Client\**" />
+	  <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- However make the Umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
+    <None Include="Client\public\umbraco-package.json" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>

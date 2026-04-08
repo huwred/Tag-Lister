@@ -1,0 +1,14 @@
+{
+  "id": "Our.community.Tags.Popular",
+  "name": "Our.community.Tags.Popular",
+  "version": "0.0.0",
+  "allowTelemetry": true,
+  "extensions": [
+    {
+      "name": "Ourcommunity Tags Popular Bundle",
+      "alias": "Our.community.Tags.Popular.Bundle",
+      "type": "bundle",
+      "js": "/App_Plugins/OurcommunityTagsPopular/our-community-tags-popular.js"
+    }
+  ]
+}
