@@ -9,3 +9,5 @@
  
  
  The controller and model are in the TagList sub folder under src, the angular code is in the App_Plugins sub folder.
+
+# New version added for Umbraco 17
