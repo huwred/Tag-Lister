@@ -1,8 +1,9 @@
 import type { CmsTag } from '../api/types.js';
 import { UmbControllerBase } from '@umbraco-cms/backoffice/class-api';
-import { UMB_AUTH_CONTEXT } from '@umbraco-cms/backoffice/auth';
 import type { UmbControllerHost } from '@umbraco-cms/backoffice/controller-api';
+import { client } from '../api/client.gen.js';
 
+const BEARER = [{ scheme: 'bearer', type: 'http' }] as const;
 const API_BASE = '/umbraco/ourcommunitytagspopular/api/v1';
 
 export class TagListRepository extends UmbControllerBase {
@@ -10,36 +11,13 @@ export class TagListRepository extends UmbControllerBase {
 		super(host);
 	}
 
-	// Cache the promise so getContext is only called once per repository instance.
-	// A second call to getContext(UMB_AUTH_CONTEXT) on the same host hangs permanently.
-	private _authContextPromise: Promise<any> | null = null;
-
-	private async getAuthHeaders(): Promise<HeadersInit> {
-		try {
-			if (!this._authContextPromise) {
-				this._authContextPromise = this.getContext(UMB_AUTH_CONTEXT);
-			}
-			const authContext = await this._authContextPromise;
-			const token = await authContext?.getLatestToken();
-			return {
-				'Content-Type': 'application/json',
-				...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-			};
-		} catch (error) {
-			this._authContextPromise = null;
-			return { 'Content-Type': 'application/json' };
-		}
-	}
-
 	async getTagsInGroup(groupName: string): Promise<CmsTag[]> {
 		try {
-			const headers = await this.getAuthHeaders();
-			const response = await fetch(`${API_BASE}/tagsingroup/${encodeURIComponent(groupName)}`, {
-				headers,
-				credentials: 'include',
+			const { data } = await client.get({
+				security: BEARER,
+				url: `${API_BASE}/tagsingroup/${encodeURIComponent(groupName)}`,
 			});
-			if (!response.ok) return [];
-			return await response.json();
+			return (data as CmsTag[]) ?? [];
 		} catch {
 			return [];
 		}
@@ -49,15 +27,12 @@ export class TagListRepository extends UmbControllerBase {
 		return this.getTagsInGroup(groupName);
 	}
 
-
 	async moveTagToGroup(tagId: number, targetGroup: string): Promise<boolean> {
 		try {
-			const headers = await this.getAuthHeaders();
-			const response = await fetch(`${API_BASE}/movetag`, {
-				method: 'POST',
-				headers,
-				body: JSON.stringify({ tagId, targetGroup }),
-				credentials: 'include',
+			const { response } = await client.post({
+				security: BEARER,
+				url: `${API_BASE}/movetag`,
+				body: { tagId, targetGroup },
 			});
 			return response.ok;
 		} catch {
@@ -67,12 +42,10 @@ export class TagListRepository extends UmbControllerBase {
 
 	async copyTagToGroup(tagId: number, targetGroup: string): Promise<{ ok: boolean; conflict: boolean }> {
 		try {
-			const headers = await this.getAuthHeaders();
-			const response = await fetch(`${API_BASE}/copytag`, {
-				method: 'POST',
-				headers,
-				body: JSON.stringify({ tagId, targetGroup }),
-				credentials: 'include',
+			const { response } = await client.post({
+				security: BEARER,
+				url: `${API_BASE}/copytag`,
+				body: { tagId, targetGroup },
 			});
 			return { ok: response.ok, conflict: response.status === 409 };
 		} catch {
@@ -83,14 +56,12 @@ export class TagListRepository extends UmbControllerBase {
 	/// Returns the tag group configured on a sibling Tags property by its alias.
 	async getGroupForAlias(contentKey: string, propertyAlias: string): Promise<string | null> {
 		try {
-			const headers = await this.getAuthHeaders();
-			const response = await fetch(
-				`${API_BASE}/groupforalias?contentKey=${encodeURIComponent(contentKey)}&propertyAlias=${encodeURIComponent(propertyAlias)}`,
-				{ headers, credentials: 'include' },
-			);
-			if (!response.ok) return null;
-			const data = await response.json();
-			return (data?.group as string) ?? null;
+			const { data } = await client.get({
+				security: BEARER,
+				url: `${API_BASE}/groupforalias`,
+				query: { contentKey, propertyAlias },
+			});
+			return (data as { group?: string })?.group ?? null;
 		} catch {
 			return null;
 		}
@@ -104,12 +75,10 @@ export class TagListRepository extends UmbControllerBase {
 		tags: string[],
 	): Promise<boolean> {
 		try {
-			const headers = await this.getAuthHeaders();
-			const response = await fetch(`${API_BASE}/addtagstocontent`, {
-				method: 'POST',
-				headers,
-				body: JSON.stringify({ contentKey, tagPropertyAlias, group, tags }),
-				credentials: 'include',
+			const { response } = await client.post({
+				security: BEARER,
+				url: `${API_BASE}/addtagstocontent`,
+				body: { contentKey, tagPropertyAlias, group, tags },
 			});
 			return response.ok;
 		} catch {
