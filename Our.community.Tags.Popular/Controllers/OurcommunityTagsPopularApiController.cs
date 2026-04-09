@@ -185,8 +185,8 @@ namespace Our.community.Tags.Popular.Controllers
                     if (!saveResult.Success)
                         return StatusCode(500, "Failed to save content.");
 
-                    if (content.Published)
-                        _contentService.Publish(content, []);
+                    //if (content.Published)
+                    //    _contentService.Publish(content, []);
 
                     return Ok(currentTags.Count);
                 }

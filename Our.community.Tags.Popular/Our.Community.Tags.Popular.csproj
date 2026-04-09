@@ -11,7 +11,7 @@
     <Product>Our.Community.Tags.Popular</Product>
     <Title>Our.Community.Tags.Popular</Title>
 
-		<Version>17.0.4</Version>
+		<Version>17.0.0</Version>
 		<Description>A custom property editor for Umbraco 17 that displays the most-used tags in a named group and lets editors multi-select them to populate a sibling Tags property</Description>
 		<PackageTags>umbraco-marketplace umbraco plugin package</PackageTags>
 		<RepositoryUrl>https://github.com/huwred/Tag-Lister</RepositoryUrl>
@@ -24,8 +24,8 @@
 
   <!-- Per-project - with versions -->
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Api.Common" Version="17.3.1" />
-    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.3.1" />
+    <PackageReference Include="Umbraco.Cms.Api.Common" Version="17.0.0" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.0.0" />
 
     <!--
       Swashbuckle is available transitively from the Umbraco packages above, but we take a direct
@@ -39,8 +39,8 @@
       use their types directly - only Swashbuckle/OpenApi types are referenced in the composer.
     -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.1" />
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="17.3.1" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.0.0" />
+
   </ItemGroup>
 
   <ItemGroup>

@@ -2,6 +2,8 @@
 
 A **custom property editor for Umbraco 17** that displays the most-used tags in a named group and lets editors multi-select them to populate a sibling **Tags** property on the same content or media node — all without leaving the editing screen.
 
+![Common Tags property editor](https://raw.githubusercontent.com/huwred/Tag-Lister/refs/heads/main/assets/propertypicker.webp)
+
 ---
 
 ## What it does
@@ -76,7 +78,7 @@ That's all that's needed. The compiled backoffice JavaScript is bundled inside t
 3. Add a second property using the standard **Tags** Data Type (this is the property that stores the actual tags). Set its alias to whatever you entered in **Tag Control** above.
 4. Save and re-open a content node of that type.
 
-The Common Tags picker appears directly on the content editing screen. Editors check the tags they want, then press **Add to list**. The Tags property is updated and the node is saved. If the node was already published it is republished automatically.
+The Common Tags picker appears directly on the content editing screen. Editors check the tags they want, then press **Add to list**. The Tags property is updated and the node is saved.
 
 ---
 
@@ -93,94 +95,3 @@ groupOverride set?
 
 This means a single Common Tags Data Type can serve multiple Document Types without needing a separate Data Type per content type — as long as each Document Type's Tags property is configured with the correct group.
 
----
-
-## API reference
-
-The package registers a versioned backoffice API at:
-
-```
-/umbraco/ourcommunitytagspopular/api/v1/
-```
-
-All endpoints require a valid Umbraco backoffice session and the **Content** section access policy.
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `tagsingroup/{groupName}` | Returns all tags in the given group sorted by usage count descending. |
-| `GET` | `groupforalias?contentKey={guid}&propertyAlias={alias}` | Returns the tag group name configured on a Tags property. |
-| `POST` | `addtagstocontent` | Appends selected tag texts to a content or media node's Tags property and saves (and republishes if published). |
-| `GET` | `ping` | Health-check — returns `"Pong"`. |
-
-### `GET tagsingroup/{groupName}` response
-
-```json
-[
-  { "id": 1, "tag": "umbraco", "group": "keywords", "noTaggedNodes": 14 },
-  { "id": 2, "tag": "cms",     "group": "keywords", "noTaggedNodes":  9 }
-]
-```
-
-### `POST addtagstocontent` request body
-
-```json
-{
-  "contentKey":       "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-  "tagPropertyAlias": "tags",
-  "group":            "keywords",
-  "tags":             ["umbraco", "cms"]
-}
-```
-
-### Swagger UI
-
-The full API is browseable at:
-
-```
-/umbraco/swagger/index.html
-```
-
-Select **Ourcommunity Tags Popular Backoffice API** from the document picker in the top-right corner.
-
----
-
-## Development workflow
-
-### Watch mode
-
-Run `npm run dev` in the `Client` folder to start Vite's file watcher. Output is still written to `wwwroot` so the Umbraco site picks up changes on page reload.
-
-### Project structure
-
-```
-Our.community.Tags.Popular/
-├── Client/
-│   ├── src/
-│   │   ├── property-editor/
-│   │   │   ├── taglist-property-editor-ui.element.ts   # Lit Element – the picker UI
-│   │   │   ├── taglist-repository.ts                   # Fetch wrapper for the backoffice API
-│   │   │   └── manifest.ts                             # Registers the propertyEditorUi extension
-│   │   ├── api/
-│   │   │   └── types.ts                                # CmsTag and related TypeScript types
-│   │   └── bundle.manifests.ts                         # Top-level manifest bundle
-│   ├── public/
-│   │   └── umbraco-package.json                        # Umbraco package descriptor
-│   └── vite.config.ts
-├── Controllers/
-│   ├── OurcommunityTagsPopularApiControllerBase.cs     # Route + auth base class
-│   ├── OurcommunityTagsPopularApiController.cs         # Tag API endpoints
-│   └── AddTagsToContentRequest.cs                      # POST request model
-├── Composers/
-│   └── OurcommunityTagsPopularApiComposer.cs           # DI and Swagger registration
-├── Constants.cs
-└── Our.community.Tags.Popular.csproj
-```
-
----
-
-## Notes
-
-- **Media nodes are supported.** `addtagstocontent` and `groupforalias` check content first, then fall back to media. This means the property editor works on media Document Types as well.
-- **Tags are stored as JSON.** `SetUpdatedTagValue` serialises the tag list as a JSON array (`["tag1","tag2"]`) to match the format Umbraco's Tags property editor expects. Writing a plain CSV string corrupts the value.
-- **The picker has no persistent value of its own.** It uses `Umbraco.Plain.Json` as its property editor schema so a valid empty value is stored. All meaningful data lives on the sibling Tags property.
-- **Re-publish on save.** When `addtagstocontent` saves a content node that is already published it calls `IContentService.Publish` immediately, so the front-end tag queries reflect the change without a manual publish step.

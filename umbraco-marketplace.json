@@ -1,0 +1,23 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "AuthorDetails": {
+    "Name": "Huw Reddick",
+    "Description": "Umbraco MVP, .Net developer",
+    "Url": "https://our.umbraco.com/members/huwred/",
+    "ImageUrl": "https://our.umbraco.com/media/upload/af865e33-184c-4930-a90b-93b05c2a4d0c/me.jpg?width=250&height=250&mode=crop&upscale=true"
+
+  },
+  "Description": "A custom property editor for Umbraco 17 that displays the most-used tags in a named group and lets editors multi-select them to populate a sibling Tags property on the same content or media node — all without leaving the editing screen.",
+  "LicenseTypes": [ "Free" ],
+  "IssueTrackerUrl": "https://github.com/huwred/Tag-Lister/issues",
+  "PackageType": "Package",
+  "Category": "Editor Tools",
+  "Tags": [ "tags", "property editor" ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://raw.githubusercontent.com/huwred/Tag-Lister/refs/heads/main/assets/propertypicker.webp",
+      "Caption": "Tag Picker"
+    }
+  ]
+
+}
