@@ -84,7 +84,7 @@ namespace Our.community.Tags.Popular.Controllers
         /// Used by the TagList property editor to resolve the group from a sibling Tags property alias.
         /// </summary>
         [HttpGet("groupforalias")]
-        public IActionResult GetGroupForAlias([FromQuery] string contentKey, [FromQuery] string propertyAlias)
+        public async Task<IActionResult> GetGroupForAlias([FromQuery] string contentKey, [FromQuery] string propertyAlias)
         {
             if (!Guid.TryParse(contentKey, out var key))
                 return BadRequest("A valid content key (GUID) is required.");
@@ -102,7 +102,7 @@ namespace Our.community.Tags.Popular.Controllers
 
                     if (prop != null)
                     {
-                        var group = GetTagPropertyGroup(prop);
+                        var group = await GetTagPropertyGroup(prop);
                         if (group != null)
                             return Ok(new { group });
                     }
@@ -117,7 +117,7 @@ namespace Our.community.Tags.Popular.Controllers
 
                     if (prop != null)
                     {
-                        var group = GetTagPropertyGroup(prop);
+                        var group = await GetTagPropertyGroup(prop);
                         if (group != null)
                             return Ok(new { group });
                     }
@@ -257,11 +257,11 @@ namespace Our.community.Tags.Popular.Controllers
         /// Returns the group name stored in the DataType configuration for a Tags property,
         /// or <c>null</c> if the property is not a Tags property or the group cannot be determined.
         /// </summary>
-        private string? GetTagPropertyGroup(IProperty property)
+        private async Task<string?> GetTagPropertyGroup(IProperty property)
         {
             try
             {
-                var dataType = _dataTypeService.GetDataType(property.PropertyType.DataTypeId);
+                var dataType = await _dataTypeService.GetAsync(property.PropertyType.DataTypeKey);
                 // Umbraco v14+ uses ConfigurationObject; earlier versions used Configuration.
                 var config = dataType?.ConfigurationObject;
                 if (config == null) return null;
